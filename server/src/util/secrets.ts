@@ -30,3 +30,6 @@ if (!MONGODB_URI) {
   }
   process.exit(1);
 }
+
+export const JWT_SECRET = process.env.JWT_SECRET || 'somesecrettoken';
+export const TOKEN_TIMEOUT: number = Number(process.env.TOKEN_TIMEOUT);
