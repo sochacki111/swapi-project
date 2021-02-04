@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { register } from '../actions/userActions';
 
 export default function RegisterScreen(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const dispatch = useDispatch();
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(register(email, password));
   };
   return (
     <div>
