@@ -6,6 +6,7 @@ export interface IUser extends Document {
   _id: string;
   email: string;
   password: string;
+  swapiHeroId: string;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
@@ -19,6 +20,10 @@ const UserSchema: Schema = new Schema(
       trim: true
     },
     password: {
+      type: String,
+      required: true
+    },
+    swapiHeroId: {
       type: String,
       required: true
     }

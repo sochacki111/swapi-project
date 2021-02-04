@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import { JWT_SECRET, TOKEN_TIMEOUT } from '../util/secrets';
@@ -14,12 +15,9 @@ export const register = async (
   res: Response
 ): Promise<Response> => {
   if (!req.body.email || !req.body.password) {
-    return (
-      res
-        .status(400)
-        // TODO Refactor return message to be not redundant. Extract to different module
-        .json({ error: { message: 'Please send your email and password' } })
-    );
+    return res
+      .status(400)
+      .json({ error: { message: 'Please send your email and password' } });
   }
 
   const user = await User.findOne({ email: req.body.email });
@@ -29,9 +27,15 @@ export const register = async (
       .json({ error: { message: 'The User already exists' } });
   }
 
-  const newUser = new User(req.body);
+  // TODO Fetch random
+  const randomHeroId: string = '1';
+  const { data } = await axios.get(
+    `https://swapi.dev/api/people/${randomHeroId}`
+  );
+
+  const newUser = new User({...req.body, swapiHeroId: randomHeroId});
   await newUser.save();
-  return res.status(201).json(newUser);
+  return res.status(201).json({ newUser, data });
 };
 
 export const signIn = async (
