@@ -3,7 +3,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import { JWT_SECRET, TOKEN_TIMEOUT } from '../util/secrets';
-import { getAllHeroIds } from '../services/swapi';
+import { getAllHeroIds } from '../services/hero.service';
 import { getRandomArrElem } from '../util/misc';
 import logger from '../util/logger';
 
@@ -36,7 +36,7 @@ export const register = async (
   const newUser = new User({ ...req.body, swapiHeroId: randomHeroId });
   await newUser.save();
   logger.debug('User created');
-
+  // TODO return newUser without passord
   return res.status(201).json(newUser);
 };
 

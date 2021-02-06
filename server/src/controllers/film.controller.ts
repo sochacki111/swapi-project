@@ -5,7 +5,7 @@ import axios from 'axios';
 import logger from '../util/logger';
 import User from '../models/user';
 import { IHero } from '../intefaces/IHero';
-import { getHeroById } from '../services/swapi';
+import { getHeroById } from '../services/hero.service';
 import { getIdFromResourceUri } from '../util/misc';
 
 declare global {
@@ -36,6 +36,7 @@ export const findAll = async (
   }
 };
 
+// TODO Make this function as one for every resource? Can it be abstracted ?
 export const findOne = async (
   req: Request,
   res: Response,
@@ -52,7 +53,7 @@ export const findOne = async (
     const hero: IHero = await getHeroById(user.swapiHeroId);
 
     const filmId = req.params.id;
-    // TODO Check if film with this id exists like films/7 404 or no ?
+    // TODO NICE TO HAVE Check if film with this id exists like films/7 404 or no ?
 
     // Check if filmId exists in film ids
     if (
