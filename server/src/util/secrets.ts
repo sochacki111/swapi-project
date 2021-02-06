@@ -33,3 +33,4 @@ if (!MONGODB_URI) {
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'somesecrettoken';
 export const TOKEN_TIMEOUT: number = Number(process.env.TOKEN_TIMEOUT);
+export const REDIS_PORT = process.env.REDIS_PORT || 6379;
