@@ -9,6 +9,7 @@ import { JwtStrategy } from './config/passport';
 import logger from './util/logger';
 import { MONGODB_URI } from './util/secrets';
 import authRoutes from './routes/auth.routes';
+import filmRoutes from './routes/film.routes';
 
 // Create a new express app instance
 const app: Application = express();
@@ -48,6 +49,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 // TODO Nice to have /api/...
 app.use(authRoutes);
+app.use('/api/films', filmRoutes);
+
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
   res.send('Hello World!');
 });
