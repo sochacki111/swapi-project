@@ -3,6 +3,9 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import { JWT_SECRET, TOKEN_TIMEOUT } from '../util/secrets';
+import { getAllHeroIds } from '../services/swapi';
+import { getRandomArrElem } from '../util/misc';
+import logger from '../util/logger';
 
 function createToken(user: IUser) {
   return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
@@ -27,15 +30,14 @@ export const register = async (
       .json({ error: { message: 'The User already exists' } });
   }
 
-  // TODO Fetch random
-  const randomHeroId: string = '1';
-  const { data } = await axios.get(
-    `https://swapi.dev/api/people/${randomHeroId}`
-  );
+  const heroIds = await getAllHeroIds();
+  const randomHeroId = getRandomArrElem(heroIds);
 
-  const newUser = new User({...req.body, swapiHeroId: randomHeroId});
+  const newUser = new User({ ...req.body, swapiHeroId: randomHeroId });
   await newUser.save();
-  return res.status(201).json({ newUser, data });
+  logger.debug('User created');
+
+  return res.status(201).json(newUser);
 };
 
 export const signIn = async (
