@@ -39,6 +39,7 @@ export const getAllHeroIds = async () => {
     const cache = await getAsync('allHeroIds');
     if (cache) {
       logger.debug('Using cached hero ids');
+      logger.debug('getAllHeroIds success');
       return JSON.parse(cache);
     }
 
