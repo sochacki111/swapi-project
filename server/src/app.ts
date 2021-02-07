@@ -15,11 +15,9 @@ import filmRoutes from './routes/film.routes';
 const app: Application = express();
 
 // Connect to MongoDB
-const mongoUrl = String(MONGODB_URI);
-
-// TODO Try async/await
+// TODO async/await
 mongoose
-  .connect(mongoUrl, {
+  .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
