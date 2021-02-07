@@ -15,8 +15,8 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 const prod = ENVIRONMENT === 'production';
 
 export const MONGODB_URI = prod
-  ? process.env.MONGODB_URI
-  : process.env.MONGODB_URI_LOCAL;
+  ? String(process.env.MONGODB_URI)
+  : String(process.env.MONGODB_URI_LOCAL);
 
 if (!MONGODB_URI) {
   if (prod) {
@@ -31,8 +31,8 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-// Is this conver correct?
 export const JWT_SECRET = process.env.JWT_SECRET || 'somesecrettoken';
+// Is this conver correct?
 export const TOKEN_TIMEOUT: number = Number(process.env.TOKEN_TIMEOUT);
-export const REDIS_PORT = Number(process.env.REDIS_PORT) || 6379;
+export const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 export const REDIS_CACHE_EXPIRE_TIME = Number(process.env.REDIS_SECONDS) || 3600;
