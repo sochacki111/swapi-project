@@ -13,7 +13,7 @@
     "ecmaVersion": 11,
     "sourceType": "module",
     "project": "./tsconfig.json",
-    "tsconfigRootDir": "backend"
+    "tsconfigRootDir": "server"
   },
   "plugins": ["prettier", "@typescript-eslint"],
   "rules": {

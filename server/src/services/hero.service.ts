@@ -1,5 +1,4 @@
 import axios from '../util/axios-swapi';
-import { AxiosResponse } from 'axios';
 import { IHero } from '../intefaces/IHero';
 import { getIdFromResourceUri } from '../util/misc';
 import logger from '../util/logger';
@@ -10,7 +9,9 @@ import { REDIS_CACHE_EXPIRE_TIME } from '../util/secrets';
 // TODO Create multiple services for each resource
 // TODO Axios interceptors?
 // TODO Should it return undefined ? How to avoid that ?
-export const getHeroById = async (id: string): Promise<IHero> => {
+export const getHeroDetailsByHeroId = async (
+  heroId: string
+): Promise<IHero> => {
   try {
     const cache = await getAsync('hero');
     if (cache) {
@@ -19,9 +20,9 @@ export const getHeroById = async (id: string): Promise<IHero> => {
     }
 
     // TODO Refactor descructurization
-    const { data } = await axios.get(`/people/${id}`);
+    const { data } = await axios.get(`/people/${heroId}`);
     const hero: IHero = data;
-    logger.debug('getHeroById success');
+    logger.debug('getHeroDetailsByHeroId success');
     await setAsync('hero', REDIS_CACHE_EXPIRE_TIME, JSON.stringify(hero));
     logger.debug('hero cached');
 
@@ -32,7 +33,26 @@ export const getHeroById = async (id: string): Promise<IHero> => {
   }
 };
 
-export const getAllHeroIds = async () => {
+// TODO should it be exported/private?
+// TODO Rename totalResult with totalHeroIds?
+export const getHeroIdsRecursively = async (
+  endpoint = '/people',
+  totalResults: string[] = []
+): Promise<string[]> => {
+  const { data } = await axios.get(endpoint);
+
+  data.results.forEach((hero: IHero) => {
+    totalResults.push(getIdFromResourceUri(hero.url));
+  });
+
+  if (data.next) {
+    await getHeroIdsRecursively(data.next, totalResults);
+  }
+
+  return totalResults;
+};
+
+export const getAllHeroIds = async (): Promise<string[]> => {
   // TODO Rename recursive function getHeroIds?
   // TODO Apply anoter try catch here?
   try {
@@ -43,9 +63,13 @@ export const getAllHeroIds = async () => {
       return JSON.parse(cache);
     }
 
-    const allHeroIds = await getHeroIds();
+    const allHeroIds = await getHeroIdsRecursively();
     logger.debug('getAllHeroIds success');
-    await setAsync('allHeroIds', REDIS_CACHE_EXPIRE_TIME, JSON.stringify(allHeroIds));
+    await setAsync(
+      'allHeroIds',
+      REDIS_CACHE_EXPIRE_TIME,
+      JSON.stringify(allHeroIds)
+    );
     logger.debug('Hero Ids cached');
     return allHeroIds;
   } catch (err) {
@@ -54,20 +78,9 @@ export const getAllHeroIds = async () => {
   }
 };
 
-// TODO Rename totalResult with totalHeroIds?
-export const getHeroIds = async (
-  endpoint: string = '/people',
-  totalResults: string[] = []
+export const getHeroFilmIdsByHeroId = async (
+  heroId: string
 ): Promise<string[]> => {
-  const { data } = await axios.get(endpoint);
-
-  data.results.forEach((hero: IHero) => {
-    totalResults.push(getIdFromResourceUri(hero.url));
-  });
-
-  if (data.next) {
-    await getHeroIds(data.next, totalResults);
-  }
-
-  return totalResults;
+  const hero = await getHeroDetailsByHeroId(heroId);
+  return hero.films.map((film) => getIdFromResourceUri(film));
 };
