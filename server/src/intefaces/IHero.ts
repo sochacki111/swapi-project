@@ -1,3 +1,4 @@
+// TODO Merge to People
 export interface IHero {
     name: string;
     height: string;
