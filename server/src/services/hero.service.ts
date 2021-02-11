@@ -5,6 +5,7 @@ import logger from '../util/logger';
 import { getAsync, setAsync } from '../config/redis';
 import { REDIS_CACHE_EXPIRE_TIME } from '../util/secrets';
 
+// TODO Move logic to people service
 // TODO Abstract this service. Get resource by id ?
 // TODO Create multiple services for each resource
 // TODO Axios interceptors?

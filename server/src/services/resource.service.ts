@@ -3,34 +3,31 @@ import logger from '../util/logger';
 import { getAsync, setAsync } from '../config/redis';
 import { REDIS_CACHE_EXPIRE_TIME } from '../util/secrets';
 
-// TODO Strategy pattern?
 export default class ResourceService {
-  private name: string;
+  private resourceName: string;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(resourceName: string) {
+    this.resourceName = resourceName;
   }
 
   // TODO How to get Resource Type here? via constructor or cleaner way?
   public async getDetailsById(resourceId: string) {
     try {
-      const cache = await getAsync(`${this.name}:${resourceId}`);
+      const cache = await getAsync(`${this.resourceName}:${resourceId}`);
       if (cache) {
-        logger.debug(`Using cached ${this.name}`);
+        logger.debug(`Using cached ${this.resourceName}`);
         return JSON.parse(cache);
       }
 
-      // TODO Refactor descructurization
-      const { data } = await axios.get(`/${this.name}/${resourceId}`);
+      const { data: resource } = await axios.get(`/${this.resourceName}/${resourceId}`);
 
-      const resource = data;
-      logger.debug(`${this.name} getDetailsById success`);
+      logger.debug(`${this.resourceName} getDetailsById success`);
       await setAsync(
-        `${this.name}:${resourceId}`,
+        `${this.resourceName}:${resourceId}`,
         REDIS_CACHE_EXPIRE_TIME,
         JSON.stringify(resource)
       );
-      logger.debug(`${this.name} record cached`);
+      logger.debug(`${this.resourceName} record cached`);
 
       return resource;
     } catch (err) {
@@ -39,8 +36,8 @@ export default class ResourceService {
     }
   }
   
-  public async getNameById(resourceId: string): Promise<string> {
-    const { name } = await this.getDetailsById(resourceId);
-    return name;
+  public async getRecordNameById(resourceId: string): Promise<string> {
+    const { name: recordName } = await this.getDetailsById(resourceId);
+    return recordName;
   }
 }
