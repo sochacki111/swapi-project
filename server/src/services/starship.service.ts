@@ -1,6 +1,6 @@
 import ResourceService from './resource.service';
 
-export default class Starship extends ResourceService {
+export default class StarshipsService extends ResourceService {
   constructor() {
     super('starships');
   }

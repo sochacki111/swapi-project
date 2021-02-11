@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
-import * as FilmController from '../controllers/film.controller';
+// import * as FilmController from '../controllers/film.controller';
+import FilmController from  '../controllers/film.controller';
 import { jwtAuth } from '../middlewares/auth';
 
 const router = Router();

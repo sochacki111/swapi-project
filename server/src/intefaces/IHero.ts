@@ -16,4 +16,5 @@ export interface IHero {
     created: string;
     edited: string;
     url: string;
+    [k: string]: string[];
 }
