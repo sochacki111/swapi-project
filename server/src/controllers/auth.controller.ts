@@ -31,7 +31,7 @@ export const register = async (
   }
 
   const peopleService = new PeopleService();
-  const heroIds = await peopleService.getAllHeroIds();
+  const heroIds = await peopleService.getAllPeopleIds();
   const randomHeroId = getRandomArrElem(heroIds);
 
   const newUser = new User({ ...req.body, swapiHeroId: randomHeroId });

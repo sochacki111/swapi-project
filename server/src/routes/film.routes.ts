@@ -1,12 +1,11 @@
 import { Router } from 'express';
 
-// import * as FilmController from '../controllers/film.controller';
-import FilmController from  '../controllers/film.controller';
+import FilmsController from  '../controllers/films.controller';
 import { jwtAuth } from '../middlewares/auth';
 
 const router = Router();
 
-router.get('/', jwtAuth, FilmController.findAll);
-router.get('/:id', jwtAuth, FilmController.findOne);
+router.get('/', jwtAuth, FilmsController.findAll);
+router.get('/:id', jwtAuth, FilmsController.findOne);
 
 export default router;

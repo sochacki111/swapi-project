@@ -14,24 +14,24 @@ export default class PeopleService extends ResourceService {
 
   // TODO should it be exported/private?
   // TODO Rename totalResult with totalHeroIds?
-  private async getHeroIdsRecursively(
+  private async getPeopleIdsRecursively(
     endpoint = '/people',
     totalResults: string[] = []
   ): Promise<string[]> {
     const { data } = await axios.get(endpoint);
 
-    data.results.forEach((hero: IHero) => {
-      totalResults.push(getIdFromResourceUri(hero.url));
+    data.results.forEach((person: IHero) => {
+      totalResults.push(getIdFromResourceUri(person.url));
     });
 
     if (data.next) {
-      await this.getHeroIdsRecursively(data.next, totalResults);
+      await this.getPeopleIdsRecursively(data.next, totalResults);
     }
 
     return totalResults;
   }
 
-  public async getAllHeroIds(): Promise<string[]> {
+  public async getAllPeopleIds(): Promise<string[]> {
     // TODO Rename recursive function getHeroIds?
     // TODO Apply anoter try catch here?
     try {
@@ -42,7 +42,7 @@ export default class PeopleService extends ResourceService {
         return JSON.parse(cache);
       }
 
-      const allHeroIds = await this.getHeroIdsRecursively();
+      const allHeroIds = await this.getPeopleIdsRecursively();
       logger.debug('getAllHeroIds success');
       await setAsync(
         'allHeroIds',

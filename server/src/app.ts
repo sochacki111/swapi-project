@@ -10,6 +10,10 @@ import logger from './util/logger';
 import { MONGODB_URI } from './util/secrets';
 import authRoutes from './routes/auth.routes';
 import filmRoutes from './routes/film.routes';
+import starshipRoutes from './routes/starship.routes';
+import vehicleRoutes from './routes/vehicle.routes';
+import speciesRoutes from './routes/species.routes';
+import planetRoutes from './routes/planet.routes';
 
 // Create a new express app instance
 const app: Application = express();
@@ -44,13 +48,13 @@ passport.use(JwtStrategy);
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 // Routes
-// TODO Nice to have /api/...
 app.use(authRoutes);
 app.use('/api/films', filmRoutes);
-
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.send('Hello World!');
-});
+app.use('/api/species', speciesRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/starships', starshipRoutes);
+app.use('/api/planets', planetRoutes);
 
 export default app;
