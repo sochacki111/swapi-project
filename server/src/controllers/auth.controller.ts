@@ -3,7 +3,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import { JWT_SECRET, TOKEN_TIMEOUT } from '../util/secrets';
-import { getAllHeroIds } from '../services/hero.service';
+import PeopleService from '../services/people.service';
 import { getRandomArrElem } from '../util/misc';
 import logger from '../util/logger';
 
@@ -30,7 +30,8 @@ export const register = async (
       .json({ error: { message: 'The User already exists' } });
   }
 
-  const heroIds = await getAllHeroIds();
+  const peopleService = new PeopleService();
+  const heroIds = await peopleService.getAllPeopleIds();
   const randomHeroId = getRandomArrElem(heroIds);
 
   const newUser = new User({ ...req.body, swapiHeroId: randomHeroId });

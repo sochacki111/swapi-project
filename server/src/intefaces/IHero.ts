@@ -1,3 +1,4 @@
+// TODO Merge to People
 export interface IHero {
     name: string;
     height: string;
@@ -15,4 +16,5 @@ export interface IHero {
     created: string;
     edited: string;
     url: string;
+    [k: string]: string[];
 }
