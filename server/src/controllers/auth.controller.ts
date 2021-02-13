@@ -36,9 +36,12 @@ export const register = async (
 
   const newUser = new User({ ...req.body, swapiHeroId: randomHeroId });
   await newUser.save();
-  logger.debug('User created');
-  // TODO return newUser without passord
-  return res.status(201).json(newUser);
+  logger.debug(`User ${newUser.email} created`);
+  return res.status(201).json({
+    _id: newUser._id,
+    email: newUser.email,
+    swapiHeroId: newUser.swapiHeroId
+  });
 };
 
 export const signIn = async (
@@ -48,11 +51,10 @@ export const signIn = async (
   if (!req.body.email || !req.body.password) {
     return res
       .status(400)
-      .json({ error: { message: 'Please. Send your email and password' } });
+      .json({ error: { message: 'Please send your email and password' } });
   }
-
+  
   const user = await User.findOne({ email: req.body.email });
-  console.log(user?.toJSON());
   if (!user) {
     return res
       .status(400)
@@ -62,9 +64,9 @@ export const signIn = async (
   const isMatch = await user.comparePassword(req.body.password);
   if (isMatch) {
     return res.status(200).json({
+      _id: user._id,
+      email: user.email,
       idToken: createToken(user),
-      localId: user._id,
-      userEmail: user.email,
       expiresIn: TOKEN_TIMEOUT
     });
   }
