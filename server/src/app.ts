@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 
 import { JwtStrategy } from './config/passport';
 import logger from './util/logger';
@@ -14,6 +15,7 @@ import starshipRoutes from './routes/starship.routes';
 import vehicleRoutes from './routes/vehicle.routes';
 import speciesRoutes from './routes/species.routes';
 import planetRoutes from './routes/planet.routes';
+import swaggerDocs from './config/swagger';
 
 // Create a new express app instance
 const app: Application = express();
@@ -48,9 +50,11 @@ passport.use(JwtStrategy);
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Routes
-app.use(authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/films', filmRoutes);
 app.use('/api/species', speciesRoutes);
 app.use('/api/vehicles', vehicleRoutes);
