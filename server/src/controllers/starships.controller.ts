@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
-import { getIdFromResourceUri } from '../util/misc';
+import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
 import PlanetsService from '../services/planets.service';
 import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
@@ -113,6 +113,8 @@ class StarshipsController {
           };
         })
       );
+
+      deleteIrrelevantProperties(starship);
 
       return res.status(200).send(starship);
     } catch (err) {

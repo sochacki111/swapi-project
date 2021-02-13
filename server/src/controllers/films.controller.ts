@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
 import { IHero } from '../intefaces/IHero';
-import { getIdFromResourceUri } from '../util/misc';
+import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
 import PlanetsService from '../services/planets.service';
 import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
@@ -175,6 +175,8 @@ class FilmsController {
           };
         })
       );
+
+      deleteIrrelevantProperties(film);
 
       return res.status(200).send(film);
     } catch (err) {
