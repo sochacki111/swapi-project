@@ -8,7 +8,6 @@ import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
 import VehiclesService from '../services/vehicles.service';
 import PeopleService from '../services/people.service';
-import ResourceController from './resource.controller';
 import FilmsService from '../services/films.service';
 
 declare global {
@@ -65,6 +64,7 @@ class FilmsController {
     }
   }
 
+  // TODO public async
   findOne = async (
     req: Request,
     res: Response,

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { signIn, register } from '../controllers/auth.controller';
+import AuthController from '../controllers/auth.controller';
 
 const router = Router();
 
@@ -65,7 +65,7 @@ const router = Router();
  *            schema:
  *              $ref: "#/components/schemas/Error"
  */
-router.post('/register', register);
+router.post('/register', AuthController.register);
 /**
  * @swagger
  * /api/auth/signin:
@@ -114,6 +114,6 @@ router.post('/register', register);
  *                      type: string
  *                      example: "The User does not exists"
  */
-router.post('/signin', signIn);
+router.post('/signin', AuthController.signIn);
 
 export default router;
