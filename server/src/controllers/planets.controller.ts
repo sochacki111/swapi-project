@@ -50,11 +50,11 @@ class PlanetsController {
     }
   }
 
-  findOne = async (
+  public async findOne(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> => {
+  ): Promise<Response> {
     try {
       const { user } = req;
       if (!user) {
@@ -113,7 +113,7 @@ class PlanetsController {
       logger.error(err);
       return res.send(err);
     }
-  };
+  }
 }
 
 export default PlanetsController.getInstance();

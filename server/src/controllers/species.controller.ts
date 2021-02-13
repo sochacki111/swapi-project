@@ -53,11 +53,11 @@ class SpeciesController {
     }
   }
 
-  findOne = async (
+  public async findOne(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> => {
+  ): Promise<Response> {
     try {
       const { user } = req;
       if (!user) {
@@ -129,7 +129,7 @@ class SpeciesController {
       logger.error(err);
       return res.send(err);
     }
-  };
+  }
 }
 
 export default SpeciesController.getInstance();
