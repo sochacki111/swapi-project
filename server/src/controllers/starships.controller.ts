@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
-import { getIdFromResourceUri } from '../util/misc';
+import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
 import PlanetsService from '../services/planets.service';
 import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
@@ -52,11 +52,11 @@ class StarshipsController {
     }
   }
 
-  findOne = async (
+  public async findOne(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> => {
+  ): Promise<Response> {
     try {
       const { user } = req;
       if (!user) {
@@ -114,12 +114,14 @@ class StarshipsController {
         })
       );
 
+      deleteIrrelevantProperties(starship);
+
       return res.status(200).send(starship);
     } catch (err) {
       logger.error(err);
       return res.send(err);
     }
-  };
+  }
 }
 
 export default StarshipsController.getInstance();

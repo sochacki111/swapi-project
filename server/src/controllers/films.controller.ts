@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
 import { IHero } from '../intefaces/IHero';
-import { getIdFromResourceUri } from '../util/misc';
+import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
 import PlanetsService from '../services/planets.service';
 import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
@@ -20,7 +20,6 @@ declare global {
   }
 }
 class FilmsController {
-
   private static instance: FilmsController;
 
   static getInstance() {
@@ -64,12 +63,11 @@ class FilmsController {
     }
   }
 
-  // TODO public async
-  findOne = async (
+  public async findOne(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> => {
+  ): Promise<Response> {
     try {
       const { user } = req;
       if (!user) {
@@ -177,12 +175,14 @@ class FilmsController {
         })
       );
 
+      deleteIrrelevantProperties(film);
+
       return res.status(200).send(film);
     } catch (err) {
       logger.error(err);
       return res.send(err);
     }
-  };
+  }
 }
 
 export default FilmsController.getInstance();
