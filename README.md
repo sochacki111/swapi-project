@@ -21,6 +21,7 @@ There are five resources user can get:
 - vehicles
 - starships
 - planets
+
 These are resources from Star Wars universe provided by https://swapi.dev/
 
 In order to get any of the resource you need to create an account first:
@@ -32,9 +33,12 @@ Successful response will return you something like:
 {
   "_id": "6019bb4ec7a8c86dc89302c0", <- this is an id of your account
   "email": "example@email.com", <- this is your email
-  "swapiHeroId": "58" <- this is an id of hero from star wars universe assigned to your account at random
+  "swapiHeroId": "1", <- this is an id of hero from star wars universe assigned to your account at random
+  "swapiHeroName": "Luke Skywalker" <- this is assigned hero name
 }
 ```
+⚠️ Important ⚠️
+Note that as you regiser your account will be assigned to random hero from star wars universe. This is important in context of getting resources later. Only resources that are in anyway related to that hero will be returned.  
 Next login to your account:
 ```sh
 curl -X POST "http://localhost:8080/api/auth/signin" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"email\":\"example@email.com\",\"password\":\"toor\"}"
