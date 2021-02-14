@@ -21,7 +21,6 @@ import swaggerDocs from './config/swagger';
 const app: Application = express();
 
 // Connect to MongoDB
-// TODO async/await
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
@@ -47,6 +46,16 @@ app.use(morgan('dev'));
 passport.use(JwtStrategy);
 
 // Express configuration
+declare global {
+  namespace Express {
+    interface User {
+      _id: string;
+      email: string;
+      swapiHeroId: string;
+    }
+  }
+}
+
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

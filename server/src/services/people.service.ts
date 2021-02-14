@@ -5,7 +5,7 @@ import { getAsync, setAsync } from '../config/redis';
 import { REDIS_CACHE_EXPIRE_TIME } from '../util/secrets';
 import ResourceService from './resource.service';
 import { getIdFromResourceUri } from '../util/misc';
-import { IHero } from '../intefaces/IHero';
+import { IPeople } from '../intefaces/IPeople';
 
 export default class PeopleService extends ResourceService {
   constructor() {
@@ -20,7 +20,7 @@ export default class PeopleService extends ResourceService {
   ): Promise<string[]> {
     const { data } = await axios.get(endpoint);
 
-    data.results.forEach((person: IHero) => {
+    data.results.forEach((person: IPeople) => {
       totalResults.push(getIdFromResourceUri(person.url));
     });
 
@@ -55,11 +55,5 @@ export default class PeopleService extends ResourceService {
       logger.error(err);
       return err;
     }
-  }
-
-  public async getHeroFilmIdsByHeroId(heroId: string): Promise<string[]> {
-    const hero = await this.getDetailsById(heroId);
-
-    return hero.films.map((film: string) => getIdFromResourceUri(film));
   }
 }

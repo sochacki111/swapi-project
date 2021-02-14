@@ -1,4 +1,3 @@
-// TODO Merge IHero to People
 export interface IPeople {
   name: string;
   height: string;
@@ -13,7 +12,5 @@ export interface IPeople {
   species: string[];
   vehicles: string[];
   starships: string[];
-  created: string;
-  edited: string;
   url: string;
 }

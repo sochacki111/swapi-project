@@ -56,7 +56,6 @@ UserSchema.pre<IUser>(
 UserSchema.methods.comparePassword = async function (
   password: string
 ): Promise<boolean> {
-  // TODO fix
   // @ts-ignore: Unreachable code error
   return bcrypt.compare(password, this.password);
 };

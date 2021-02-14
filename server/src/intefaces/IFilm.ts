@@ -5,9 +5,15 @@ export interface IFilm {
   director: string;
   producer: string;
   release_date: string;
-  characters: (string | { id: string; name: string; url?: string; hasAccess: boolean })[];
-  planets: (string | { id: string; name: string; url?: string; hasAccess: boolean })[];
-  starships: (string | { id: string; name: string; url?: string; hasAccess: boolean })[];
-  vehicles: (string | { id: string; name: string; url?: string; hasAccess: boolean })[];
-  species: (string | { id: string; name: string; url?: string; hasAccess: boolean })[];
+  characters: (string | ResourceDetails)[];
+  planets: (string | ResourceDetails)[];
+  starships: (string | ResourceDetails)[];
+  vehicles: (string | ResourceDetails)[];
+  species: (string | ResourceDetails)[];
+}
+
+export interface ResourceDetails {
+  id: string;
+  name: string;
+  hasAccess: boolean;
 }
