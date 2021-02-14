@@ -37,7 +37,8 @@ export default class AuthController {
     return res.status(201).json({
       _id: newUser._id,
       email: newUser.email,
-      swapiHeroId: newUser.swapiHeroId
+      swapiHeroId: newUser.swapiHeroId,
+      swapiHeroName: await peopleService.getRecordNameById(newUser.swapiHeroId)
     });
   }
 

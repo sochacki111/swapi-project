@@ -57,7 +57,10 @@ const router = Router();
  *                  example: "example@email.com"
  *                swapiHeroId:
  *                  type: string
- *                  example: "58"
+ *                  example: "1"
+ *                swapiHeroName:
+ *                  type: string
+ *                  example: "Luke Skywalker"
  *      '400':
  *        description: The User already exists or missing credentials
  *        content:

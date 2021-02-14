@@ -10,8 +10,8 @@ export default class ResourceService {
     this.resourceName = resourceName;
   }
 
-  // TODO How to get Resource Type here? via constructor or cleaner way?
-  public async getDetailsById(resourceId: string) {
+  // TODO Dynamically return type as a resource interface. "Polymorphic this"?
+  public async getDetailsById(resourceId: string): Promise<any> {
     try {
       const cache = await getAsync(`${this.resourceName}:${resourceId}`);
       if (cache) {
