@@ -2,19 +2,29 @@ import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
 import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
-import PlanetsService from '../services/planets.service';
-import SpeciesService from '../services/species.service';
-import StarshipsService from '../services/starship.service';
 import VehiclesService from '../services/vehicles.service';
 import PeopleService from '../services/people.service';
 import FilmsService from '../services/films.service';
+import { IPeople } from '../intefaces/IPeople';
 
 class VehiclesController {
   private static instance: VehiclesController;
 
+  private static vehiclesService: VehiclesService;
+
+  private static peopleService: PeopleService;
+
+  private static filmsService: FilmsService;
+  
+  private constructor() {}
+
   static getInstance() {
     if (!VehiclesController.instance) {
       VehiclesController.instance = new VehiclesController();
+      VehiclesController.vehiclesService = new VehiclesService();
+      VehiclesController.peopleService = new PeopleService();
+      VehiclesController.filmsService = new FilmsService();
+
     }
     return VehiclesController.instance;
   }
@@ -31,19 +41,19 @@ class VehiclesController {
         logger.debug('Unauthorized');
         return res.status(401).send('Unauthorized');
       }
-      const peopleService = new PeopleService();
       // Get Hero Details
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero: IPeople = await VehiclesController.peopleService.getDetailsById(user.swapiHeroId);
 
       const heroVehicleIds = hero.vehicles.map((vehicle: string) =>
         getIdFromResourceUri(vehicle)
       );
 
-      const vehiclesService = new VehiclesService();
       const vehicles = await Promise.all(
         heroVehicleIds.map(async (vehicleId: string) => ({
           id: vehicleId,
-          name: await vehiclesService.getRecordNameById(vehicleId)
+          name: await VehiclesController.vehiclesService.getRecordNameById(
+            vehicleId
+          )
         }))
       );
       return res.status(200).send(vehicles);
@@ -65,8 +75,7 @@ class VehiclesController {
       }
 
       // Get Hero Details
-      const peopleService = new PeopleService();
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero: IPeople = await VehiclesController.peopleService.getDetailsById(user.swapiHeroId);
 
       const resourceId = req.params.id;
 
@@ -82,8 +91,7 @@ class VehiclesController {
         return res.status(403).send('Forbidded');
       }
 
-      const vehiclesService = new VehiclesService();
-      const vehicle = await vehiclesService.getDetailsById(resourceId);
+      const vehicle = await VehiclesController.vehiclesService.getDetailsById(resourceId);
 
       await Promise.all(
         vehicle.pilots.map(async (pilot: string, index: number) => {
@@ -92,13 +100,12 @@ class VehiclesController {
           const hasAccess = user.swapiHeroId.includes(pilotId);
           vehicle.pilots[index] = {
             id: pilotId,
-            name: await peopleService.getRecordNameById(pilotId),
+            name: await VehiclesController.peopleService.getRecordNameById(pilotId),
             hasAccess
           };
         })
       );
 
-      const filmsService = new FilmsService();
       const heroFilmIds = hero.films.map((film: string) =>
         getIdFromResourceUri(film)
       );
@@ -108,7 +115,7 @@ class VehiclesController {
           const hasAccess = heroFilmIds.includes(filmId);
           vehicle.films[index] = {
             id: filmId,
-            name: await filmsService.getRecordNameById(filmId),
+            name: await VehiclesController.filmsService.getRecordNameById(filmId),
             hasAccess
           };
         })

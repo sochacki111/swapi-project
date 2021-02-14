@@ -3,18 +3,29 @@ import { Request, Response, NextFunction } from 'express';
 import logger from '../util/logger';
 import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
 import PlanetsService from '../services/planets.service';
-import SpeciesService from '../services/species.service';
-import StarshipsService from '../services/starship.service';
-import VehiclesService from '../services/vehicles.service';
 import PeopleService from '../services/people.service';
 import FilmsService from '../services/films.service';
+import { IPeople } from '../intefaces/IPeople';
+import { IPlanet } from '../intefaces/IPlanet';
+import IResourceDetails from '../intefaces/IResourceDetails';
 
 class PlanetsController {
   private static instance: PlanetsController;
 
+  private static planetsService: PlanetsService;
+
+  private static peopleService: PeopleService;
+
+  private static filmsService: FilmsService;
+
+  private constructor() {}
+
   static getInstance() {
     if (!PlanetsController.instance) {
       PlanetsController.instance = new PlanetsController();
+      PlanetsController.planetsService = new PlanetsService();
+      PlanetsController.peopleService = new PeopleService();
+      PlanetsController.filmsService = new FilmsService();
     }
     return PlanetsController.instance;
   }
@@ -31,16 +42,18 @@ class PlanetsController {
         logger.debug('Unauthorized');
         return res.status(401).send('Unauthorized');
       }
-      const peopleService = new PeopleService();
       // Get Hero Details
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero: IPeople = await PlanetsController.peopleService.getDetailsById(
+        user.swapiHeroId
+      );
 
       const heroPlanetId = getIdFromResourceUri(hero.homeworld);
-      const planetsService = new PlanetsService();
       const planets = [
         {
           id: heroPlanetId,
-          name: await planetsService.getRecordNameById(heroPlanetId)
+          name: await PlanetsController.planetsService.getRecordNameById(
+            heroPlanetId
+          )
         }
       ];
 
@@ -50,6 +63,7 @@ class PlanetsController {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public async findOne(
     req: Request,
     res: Response,
@@ -63,8 +77,9 @@ class PlanetsController {
       }
 
       // Get Hero Details
-      const peopleService = new PeopleService();
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero = await PlanetsController.peopleService.getDetailsById(
+        user.swapiHeroId
+      );
 
       const resourceId = req.params.id;
 
@@ -76,36 +91,44 @@ class PlanetsController {
         return res.status(403).send('Forbidded');
       }
 
-      const planetsService = new PlanetsService();
-      const planet = await planetsService.getDetailsById(resourceId);
-
-      await Promise.all(
-        planet.residents.map(async (resident: string, index: number) => {
-          const residentId = getIdFromResourceUri(resident);
-
-          const hasAccess = user.swapiHeroId.includes(residentId);
-          planet.residents[index] = {
-            id: residentId,
-            name: await peopleService.getRecordNameById(residentId),
-            hasAccess
-          };
-        })
+      const planet: IPlanet = await PlanetsController.planetsService.getDetailsById(
+        resourceId
       );
 
-      const filmsService = new FilmsService();
+      await Promise.all(
+        planet.residents.map(
+          async (resident: string | IResourceDetails, index: number) => {
+            const residentId = getIdFromResourceUri(resident as string);
+
+            const hasAccess = user.swapiHeroId.includes(residentId);
+            planet.residents[index] = {
+              id: residentId,
+              name: await PlanetsController.peopleService.getRecordNameById(
+                residentId
+              ),
+              hasAccess
+            };
+          }
+        )
+      );
+
       const heroFilmIds = hero.films.map((film: string) =>
         getIdFromResourceUri(film)
       );
       await Promise.all(
-        planet.films.map(async (film: string, index: number) => {
-          const filmId = getIdFromResourceUri(film);
-          const hasAccess = heroFilmIds.includes(filmId);
-          planet.films[index] = {
-            id: filmId,
-            name: await filmsService.getRecordNameById(filmId),
-            hasAccess
-          };
-        })
+        planet.films.map(
+          async (film: string | IResourceDetails, index: number) => {
+            const filmId = getIdFromResourceUri(film as string);
+            const hasAccess = heroFilmIds.includes(filmId);
+            planet.films[index] = {
+              id: filmId,
+              name: await PlanetsController.filmsService.getRecordNameById(
+                filmId
+              ),
+              hasAccess
+            };
+          }
+        )
       );
 
       deleteIrrelevantProperties(planet);

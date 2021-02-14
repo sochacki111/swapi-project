@@ -9,7 +9,8 @@ import StarshipsService from '../services/starship.service';
 import VehiclesService from '../services/vehicles.service';
 import PeopleService from '../services/people.service';
 import FilmsService from '../services/films.service';
-import { IFilm, ResourceDetails } from '../intefaces/IFilm';
+import { IFilm } from '../intefaces/IFilm';
+import IResourceDetails from '../intefaces/IResourceDetails';
 
 // TODO Implement strategy design pattern to get rid off redundant code in controllers
 class FilmsController {
@@ -17,12 +18,21 @@ class FilmsController {
 
   private static peopleService: PeopleService;
 
+  private static filmsService: FilmsService;
+  
+  private static vehiclesService: VehiclesService;
+
+  private static starshipsService: StarshipsService;
+
   private constructor() {}
 
   static getInstance() {
     if (!FilmsController.instance) {
       FilmsController.instance = new FilmsController();
       FilmsController.peopleService = new PeopleService();
+      FilmsController.filmsService = new FilmsService();
+      FilmsController.vehiclesService = new VehiclesService();
+      FilmsController.starshipsService = new StarshipsService();
     }
     return FilmsController.instance;
   }
@@ -40,8 +50,7 @@ class FilmsController {
         return res.status(401).send('Unauthorized');
       }
       // Get Hero Details
-      const peopleService = new PeopleService();
-      const hero: IPeople = await peopleService.getDetailsById(
+      const hero: IPeople = await FilmsController.peopleService.getDetailsById(
         user.swapiHeroId
       );
 
@@ -50,11 +59,10 @@ class FilmsController {
         getIdFromResourceUri(film)
       );
 
-      const filmService = new FilmsService();
       const films = await Promise.all(
         heroFilmIds.map(async (filmId: string) => ({
           id: filmId,
-          title: await filmService.getRecordNameById(filmId)
+          title: await FilmsController.filmsService.getRecordNameById(filmId)
         }))
       );
       return res.status(200).send(films);
@@ -77,8 +85,7 @@ class FilmsController {
       }
 
       // Get Hero Details
-      const peopleService = new PeopleService();
-      const hero: IPeople = await peopleService.getDetailsById(
+      const hero: IPeople = await FilmsController.peopleService.getDetailsById(
         user.swapiHeroId
       );
 
@@ -97,18 +104,21 @@ class FilmsController {
         return res.status(403).send('Forbidded');
       }
 
-      const filmService = new FilmsService();
-      const film: IFilm = await filmService.getDetailsById(resourceId);
+      const film: IFilm = await FilmsController.filmsService.getDetailsById(
+        resourceId
+      );
 
       await Promise.all(
         film.characters.map(
-          async (character: string | ResourceDetails, index: number) => {
+          async (character: string | IResourceDetails, index: number) => {
             const characterId = getIdFromResourceUri(character as string);
 
             const hasAccess = user.swapiHeroId.includes(characterId);
             film.characters[index] = {
               id: characterId,
-              name: await peopleService.getRecordNameById(characterId),
+              name: await FilmsController.peopleService.getRecordNameById(
+                characterId
+              ),
               hasAccess
             };
           }
@@ -119,7 +129,7 @@ class FilmsController {
       const heroPlanetId = getIdFromResourceUri(hero.homeworld);
       await Promise.all(
         film.planets.map(
-          async (planet: string | ResourceDetails, index: number) => {
+          async (planet: string | IResourceDetails, index: number) => {
             const planetId = getIdFromResourceUri(planet as string);
 
             const hasAccess = heroPlanetId.includes(planetId);
@@ -132,37 +142,35 @@ class FilmsController {
         )
       );
 
-      const starshipService = new StarshipsService();
       const heroStarshipIds = hero.starships.map((starship: string) =>
         getIdFromResourceUri(starship)
       );
       await Promise.all(
         film.starships.map(
-          async (starship: string | ResourceDetails, index: number) => {
+          async (starship: string | IResourceDetails, index: number) => {
             const starshipId = getIdFromResourceUri(starship as string);
             const hasAccess = heroStarshipIds.includes(starshipId);
             film.starships[index] = {
               id: starshipId,
-              name: await starshipService.getRecordNameById(starshipId),
+              name: await FilmsController.starshipsService.getRecordNameById(starshipId),
               hasAccess
             };
           }
         )
       );
 
-      const vehicleService = new VehiclesService();
       const heroVehicleIds = hero.vehicles.map((vehicle: string) =>
         getIdFromResourceUri(vehicle)
       );
       await Promise.all(
         film.vehicles.map(
-          async (vehicle: string | ResourceDetails, index: number) => {
+          async (vehicle: string | IResourceDetails, index: number) => {
             const vehicleId = getIdFromResourceUri(vehicle as string);
 
             const hasAccess = heroVehicleIds.includes(vehicleId);
             film.vehicles[index] = {
               id: vehicleId,
-              name: await vehicleService.getRecordNameById(vehicleId),
+              name: await FilmsController.vehiclesService.getRecordNameById(vehicleId),
               hasAccess
             };
           }
@@ -175,7 +183,7 @@ class FilmsController {
       );
       await Promise.all(
         film.species.map(
-          async (species: string | ResourceDetails, index: number) => {
+          async (species: string | IResourceDetails, index: number) => {
             const speciesId = getIdFromResourceUri(species as string);
 
             const hasAccess = heroSpeciesIds.includes(speciesId);

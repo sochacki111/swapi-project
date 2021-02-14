@@ -1,3 +1,5 @@
+import IResourceDetails from './IResourceDetails';
+
 export interface IPlanet {
   name: string;
   rotation_period: string;
@@ -8,6 +10,6 @@ export interface IPlanet {
   terrain: string;
   surface_water: string;
   population: string;
-  residents: string[];
-  films: string[];
+  residents: (string | IResourceDetails)[];
+  films: (string | IResourceDetails)[];
 }

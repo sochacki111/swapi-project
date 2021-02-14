@@ -1,3 +1,5 @@
+import IResourceDetails from './IResourceDetails';
+
 export interface IFilm {
   title: string;
   episode_id: number;
@@ -5,15 +7,9 @@ export interface IFilm {
   director: string;
   producer: string;
   release_date: string;
-  characters: (string | ResourceDetails)[];
-  planets: (string | ResourceDetails)[];
-  starships: (string | ResourceDetails)[];
-  vehicles: (string | ResourceDetails)[];
-  species: (string | ResourceDetails)[];
-}
-
-export interface ResourceDetails {
-  id: string;
-  name: string;
-  hasAccess: boolean;
+  characters: (string | IResourceDetails)[];
+  planets: (string | IResourceDetails)[];
+  starships: (string | IResourceDetails)[];
+  vehicles: (string | IResourceDetails)[];
+  species: (string | IResourceDetails)[];
 }

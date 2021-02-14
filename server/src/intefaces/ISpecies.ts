@@ -1,3 +1,5 @@
+import IResourceDetails from './IResourceDetails';
+
 export interface ISpecies {
   name: string;
   classification: string;
@@ -7,8 +9,8 @@ export interface ISpecies {
   hair_colors: string;
   eye_colors: string;
   average_lifespan: string;
-  homeworld: string;
+  homeworld: string | IResourceDetails;
   language: string;
-  people: string[];
-  films: string[];
+  people: (string | IResourceDetails)[];
+  films: (string | IResourceDetails)[];
 }

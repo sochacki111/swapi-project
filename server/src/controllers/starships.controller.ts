@@ -2,19 +2,27 @@ import { Request, Response, NextFunction } from 'express';
 
 import logger from '../util/logger';
 import { getIdFromResourceUri, deleteIrrelevantProperties } from '../util/misc';
-import PlanetsService from '../services/planets.service';
-import SpeciesService from '../services/species.service';
 import StarshipsService from '../services/starship.service';
-import VehiclesService from '../services/vehicles.service';
 import PeopleService from '../services/people.service';
 import FilmsService from '../services/films.service';
 
 class StarshipsController {
   private static instance: StarshipsController;
 
+  private static peopleService: PeopleService;
+
+  private static filmsService: FilmsService;
+
+  private static starshipsService: StarshipsService;
+
+  private constructor() {}
+
   static getInstance() {
     if (!StarshipsController.instance) {
       StarshipsController.instance = new StarshipsController();
+      StarshipsController.peopleService = new PeopleService();
+      StarshipsController.filmsService = new FilmsService();
+      StarshipsController.starshipsService = new StarshipsService();
     }
     return StarshipsController.instance;
   }
@@ -31,19 +39,21 @@ class StarshipsController {
         logger.debug('Unauthorized');
         return res.status(401).send('Unauthorized');
       }
-      const peopleService = new PeopleService();
       // Get Hero Details
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero = await StarshipsController.peopleService.getDetailsById(
+        user.swapiHeroId
+      );
 
       const heroStarshipIds = hero.starships.map((starship: string) =>
         getIdFromResourceUri(starship)
       );
 
-      const starshipsService = new StarshipsService();
       const starships = await Promise.all(
         heroStarshipIds.map(async (starshipId: string) => ({
           id: starshipId,
-          name: await starshipsService.getRecordNameById(starshipId)
+          name: await StarshipsController.starshipsService.getRecordNameById(
+            starshipId
+          )
         }))
       );
       return res.status(200).send(starships);
@@ -52,6 +62,7 @@ class StarshipsController {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public async findOne(
     req: Request,
     res: Response,
@@ -65,8 +76,9 @@ class StarshipsController {
       }
 
       // Get Hero Details
-      const peopleService = new PeopleService();
-      const hero = await peopleService.getDetailsById(user.swapiHeroId);
+      const hero = await StarshipsController.peopleService.getDetailsById(
+        user.swapiHeroId
+      );
 
       const resourceId = req.params.id;
 
@@ -82,8 +94,9 @@ class StarshipsController {
         return res.status(403).send('Forbidded');
       }
 
-      const starshipsService = new StarshipsService();
-      const starship = await starshipsService.getDetailsById(resourceId);
+      const starship = await StarshipsController.starshipsService.getDetailsById(
+        resourceId
+      );
 
       await Promise.all(
         starship.pilots.map(async (pilot: string, index: number) => {
@@ -92,13 +105,14 @@ class StarshipsController {
           const hasAccess = user.swapiHeroId.includes(pilotId);
           starship.pilots[index] = {
             id: pilotId,
-            name: await peopleService.getRecordNameById(pilotId),
+            name: await StarshipsController.peopleService.getRecordNameById(
+              pilotId
+            ),
             hasAccess
           };
         })
       );
 
-      const filmsService = new FilmsService();
       const heroFilmIds = hero.films.map((film: string) =>
         getIdFromResourceUri(film)
       );
@@ -108,7 +122,9 @@ class StarshipsController {
           const hasAccess = heroFilmIds.includes(filmId);
           starship.films[index] = {
             id: filmId,
-            name: await filmsService.getRecordNameById(filmId),
+            name: await StarshipsController.filmsService.getRecordNameById(
+              filmId
+            ),
             hasAccess
           };
         })
