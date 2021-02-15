@@ -28,6 +28,7 @@ class SpeciesController {
       SpeciesController.instance = new SpeciesController();
       SpeciesController.planetsService = new PlanetsService();
       SpeciesController.speciesService = new SpeciesService();
+      SpeciesController.peopleService = new PeopleService();
     }
     return SpeciesController.instance;
   }
