@@ -1,5 +1,5 @@
-FROM node:10
-#alpine slim
+FROM node:10-alpine3.10
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -11,4 +11,3 @@ COPY . .
 EXPOSE 8080
 
 CMD ["npm", "run", "dev"]
-#  npm run start
