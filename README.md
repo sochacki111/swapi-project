@@ -1,4 +1,5 @@
 # swapi-project
+Node.js REST API that makes use of the resources from the Star Wars universe provided by https://swapi.dev/. It randomly assigns the Star Wars hero to registered user. Based on that assignment the user will gain access to Star wars resources associated with that hero. API caches every request to SWAPI using Redis which reduces server response time.
 
 ## Requirements
 Docker installed on your machine
