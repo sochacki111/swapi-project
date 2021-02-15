@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from '../axios-base';
 import {
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
@@ -12,7 +12,7 @@ import {
 export const register = (email, password) => async (dispatch) => {
   dispatch({ type: USER_REGISTER_REQUEST, payload: { email, password } });
   try {
-    const { data } = await Axios.post('/register', {
+    const { data } = await axios.post('/auth/register', {
       email,
       password
     });
@@ -33,7 +33,7 @@ export const register = (email, password) => async (dispatch) => {
 export const signin = (email, password) => async (dispatch) => {
   dispatch({ type: USER_SIGNIN_REQUEST, payload: { email, password } });
   try {
-    const { data } = await Axios.post('/signin', { email, password });
+    const { data } = await axios.post('/auth/signin', { email, password });
     dispatch({ type: USER_SIGNIN_SUCCESS, payload: data });
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
@@ -50,5 +50,5 @@ export const signin = (email, password) => async (dispatch) => {
 export const signout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_SIGNOUT });
-  document.location.href = '/signin';
+  document.location.href = '/auth/signin';
 };
