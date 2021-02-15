@@ -1,5 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
+import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import cors from 'cors';
@@ -7,8 +6,6 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 
 import { JwtStrategy } from './config/passport';
-import logger from './util/logger';
-import { MONGODB_URI } from './util/secrets';
 import authRoutes from './routes/auth.routes';
 import filmRoutes from './routes/film.routes';
 import starshipRoutes from './routes/starship.routes';
@@ -19,23 +16,6 @@ import swaggerDocs from './config/swagger';
 
 // Create a new express app instance
 const app: Application = express();
-
-// Connect to MongoDB
-mongoose
-  .connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    logger.debug('DB connected!');
-  })
-  .catch((err) => {
-    logger.fatal(
-      `MongoDB connection error. Please make sure MongoDB is running. ${err}`
-    );
-    process.exit();
-  });
 
 // Middlewares
 app.use(cors());
