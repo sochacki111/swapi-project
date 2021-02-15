@@ -22,13 +22,14 @@ There are five resources user can get:
 - starships
 - planets
 
-These are resources from Star Wars universe provided by https://swapi.dev/
+These are resources from the Star Wars universe provided by https://swapi.dev/
 
-### 1. In order to get any of the resource you need to create an account first:
+### 1. Registering an account
+In order to get any of the resource you need to create an account first:
 ```sh
 curl -X POST "http://localhost:8080/api/auth/register" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"email\":\"example@email.com\",\"password\":\"toor\"}"
 ```
-Successful response will return you something like:
+A successful response will return you something like:
 ```sh
 {
   "_id": "6019bb4ec7a8c86dc89302c0", <- this is an id of your account
@@ -38,12 +39,12 @@ Successful response will return you something like:
 }
 ```
 ⚠️ Important ⚠️
-Note that as you regiser your account will be assigned to random hero from star wars universe. This is important in context of getting resources later. Only resources that are in anyway related to that hero will be returned.  
-### 2. Next login to your account:
+Note that as you register your account will be assigned to random hero from star wars universe. This is important in the context of getting resources later. Only resources that are in any way related to that hero will be returned.
+### 2. Logging to account
 ```sh
 curl -X POST "http://localhost:8080/api/auth/signin" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"email\":\"example@email.com\",\"password\":\"toor\"}"
 ```
-Successful response will return you something like:
+A successful response will return you something like:
 ```sh
 {
   "_id": "6019bb4ec7a8c86dc89302c0",
@@ -52,11 +53,12 @@ Successful response will return you something like:
   "expiresIn": "3600"
 }
 ```
-### 3. The server returned you JWT token "idToken" which you need to append to every request to get resource. E.g. lets try to get films from star wars universe. Notice how the token is appended to that request. It's ```-H  "Authorization: Bearer <tokenId>"```
+### 3. Getting resource list
+The server returned you JWT token "idToken" which you need to append to every request to get a resource. E.g. let's try to get films from star wars universe. Notice how the token is appended to that request. It's ```-H  "Authorization: Bearer <tokenId>"```
 ```sh
 curl -X GET "http://localhost:8080/api/films" -H  "accept: application/json" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTliYjRlYzdhOGM4NmRjODkzMDJjMCIsImVtYWlsIjoiZXhhbXBsZUBlbWFpbC5jb20iLCJpYXQiOjE2MTMyMjc3OTAsImV4cCI6MTYxMzIzMTM5MH0.F2UTmIXyp9v4fQr62888DTgGadbwe8HMnB7B45CMwO8"
 ```
-Successful response will return you something like:
+A successful response will return you something like:
 ```sh
 [
   {
@@ -77,14 +79,15 @@ Successful response will return you something like:
   }
 ]
 ```
+⚠️ Important ⚠️
 Your result may vary from the example. It depends on which star wars hero was assigned to your profile. In our example 'Luke Skywalker' appeared in these four films, hence the results of that request
 
 ### 4. Getting resource details
-Based on our previous example we have access to film of id "1". Let's try to get details about this film:
+Based on our previous example we can notice that we have access to film of id "1". Let's try to get details about this film:
 ```sh
 curl -X GET "http://localhost:8080/api/films/1" -H  "accept: application/json"
 ```
-Successful response will look like this:
+A successful response will look like this:
 ```sh
 {
   "title": "A New Hope",
@@ -295,10 +298,10 @@ Successful response will look like this:
   ]
 }
 ```
+⚠️ Important ⚠️
+Besides simple information about the film. The returned object contains also lists of associated resources like characters, planets, starship, vehicles and species. Each object of the list contains "hasAccess" property which designates whether the currently logged in user has access to details of that resource.
 
-Besides of simple informations about the film. Returned object contains also lists of associated resources like characters, planets, starship, vehicles and species. Each object of the list consists of three properties: "id", "name" and "hasAccess". Property "hasAccess" designates whether the currently logged in user has access to details of that resource.
-
-To get full experience from working with the API please follow the API documentation available at http://localhost:8080/api-docs/
+*To get the full experience from working with the API please follow the API documentation available at http://localhost:8080/api-docs/*
 
 
 ## Technologies
