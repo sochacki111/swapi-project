@@ -62,6 +62,7 @@ class VehiclesController {
     }
   }
 
+  // TODO Fix
   findOne = async (
     req: Request,
     res: Response,
