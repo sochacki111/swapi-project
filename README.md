@@ -4,6 +4,16 @@ Node.js REST API that makes use of the resources from the Star Wars universe pro
 ## Requirements
 Docker installed on your machine
 
+## Technologies
+✅ TypeScript  
+✅ Express.js  
+✅ MongoDB  
+✅ Passport.js (JWT authorization)  
+✅ pino, morgan (logging)  
+✅ Redis (request caching)  
+✅ Docker  
+✅ Swagger (API Documentation)  
+
 ## Installation
 Run following commands in project root directory:
 ```sh
@@ -303,14 +313,3 @@ A successful response will look like this:
 Besides simple information about the film. The returned object contains also lists of associated resources like characters, planets, starship, vehicles and species. Each object of the list contains "hasAccess" property which designates whether the currently logged in user has access to details of that resource.
 
 *To get the full experience from working with the API please follow the API documentation available at http://localhost:8080/api-docs/*
-
-
-## Technologies
-✅ TypeScript  
-✅ Express.js  
-✅ MongoDB  
-✅ Passport.js (JWT authorization)  
-✅ pino, morgan (logging)  
-✅ Redis (request caching)  
-✅ Docker  
-✅ Swagger (API Documentation)  
